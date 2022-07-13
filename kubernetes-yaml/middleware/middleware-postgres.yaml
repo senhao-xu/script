@@ -12,8 +12,6 @@ spec:
       labels:
         name: middleware-postgres
     spec:
-      nodeSelector:
-        pie.cloud.node.data: "true"
       containers: 
       - name: postgres
         image: postgres
