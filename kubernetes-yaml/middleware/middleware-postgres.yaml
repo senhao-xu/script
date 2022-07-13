@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: middleware-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: middleware-postgres
+  template:
+    metadata:
+      labels:
+        name: middleware-postgres
+    spec:
+      nodeSelector:
+        pie.cloud.node.data: "true"
+      containers: 
+      - name: postgres
+        image: postgres
+        imagePullPolicy: Always
+        env:
+        - name: POSTGRES_USER
+          value: postgres
+        - name: POSTGRES_PASSWORD
+          value: "postgres"
+        volumeMounts:
+        - name: postgres
+          mountPath: /var/lib/postgresql/11/main
+      volumes:
+      - name: postgres
+        hostPath:
+          path: /data/middleware/postgres/
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: middleware-postgres
+  labels:
+    name: middleware-postgres
+spec:
+  type: NodePort
+  ports:
+    - nodePort: 30811
+      port: 5432
+      targetPort: 5432
+      protocol: TCP
+  selector:
+    name: middleware-postgres
