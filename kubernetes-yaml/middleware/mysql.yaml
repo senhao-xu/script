@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: middleware-mysql-configmap
+  name: mysql-configmap
   labels:
-    app: middleware-mysql
+    app: mysql
 data:
   my.cnf: |
     [mysqld]
@@ -14,16 +14,16 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: middleware-mysql
+  name: mysql
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: middleware-mysql
+      name: mysql
   template:
     metadata:
       labels:
-        name: middleware-mysql
+        name: mysql
     spec:
       containers:
         - name: mysql
@@ -46,12 +46,12 @@ spec:
           path: /data/middleware/mysql-data
       - name: mysql-config
         configMap:
-          name: middleware-mysql-configmap
+          name: mysql-configmap
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: middleware-mysql
+  name: mysql
 spec:
   type: NodePort
   ports:
@@ -59,4 +59,4 @@ spec:
     targetPort: 3306
     nodePort: 30306
   selector:
-    name: middleware-mysql
+    name: mysql

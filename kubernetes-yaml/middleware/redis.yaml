@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: middleware-redis-configmap
+  name: redis-configmap
 data:
   redis-config: |
     maxmemory 314572800
@@ -10,16 +10,16 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: middleware-redis
+  name: redis
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: middleware-redis
+      app: redis
   template:
     metadata:
       labels:
-        app: middleware-redis
+        app: redis
     spec:
       containers:
         - name: redis
@@ -45,7 +45,7 @@ spec:
             path: /data/middleware/redis-data
         - name: config
           configMap:
-            name: middleware-redis-configmap
+            name: redis-configmap
             items:
             - key: redis-config
               path: redis.conf
@@ -53,12 +53,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: middleware-redis
+  name: redis
   labels:
-    app: middleware-redis
+    app: redis
 spec:
   ports:
   - port: 6379
     targetPort: 6379
   selector:
-    app: middleware-redis
+    app: redis

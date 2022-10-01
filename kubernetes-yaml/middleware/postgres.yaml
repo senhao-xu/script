@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: middleware-postgres
+  name: postgres
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: middleware-postgres
+      name: postgres
   template:
     metadata:
       labels:
-        name: middleware-postgres
+        name: postgres
     spec:
       containers: 
       - name: postgres
@@ -32,9 +32,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: middleware-postgres
+  name: postgres
   labels:
-    name: middleware-postgres
+    name: postgres
 spec:
   type: NodePort
   ports:
@@ -43,4 +43,4 @@ spec:
       targetPort: 5432
       protocol: TCP
   selector:
-    name: middleware-postgres
+    name: postgres
