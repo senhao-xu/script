@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: etcd
+  labels:
+    component: etcd
+spec:
+  serviceName: etcd
+  replicas: 3
+  selector:
+    matchLabels:
+      component: etcd
+  template:
+    metadata:
+      name: etcd
+      labels:
+        component: etcd
+    spec:
+      containers:
+        - name: etcd
+          image: quay.io/coreos/etcd:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: CLUSTER_SIZE
+              value: "3"
+            - name: SET_NAME
+              value: "etcd"
+            - name: CLUSTER_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          command:
+            - /bin/sh
+            - -ecx
+            - |
+              IP=$(hostname -i)
+              PEERS=""
+              for i in $(seq 0 $((${CLUSTER_SIZE} - 1))); do
+                  PEERS="${PEERS}${PEERS:+,}${SET_NAME}-${i}=http://${SET_NAME}-${i}.${SET_NAME}:2380"
+              done
+              exec etcd --name ${HOSTNAME} \
+                --listen-peer-urls http://${IP}:2380 \
+                --listen-client-urls http://${IP}:2379,http://127.0.0.1:2379 \
+                --advertise-client-urls http://${HOSTNAME}.${SET_NAME}:2379 \
+                --initial-advertise-peer-urls http://${HOSTNAME}.${SET_NAME}:2380 \
+                --initial-cluster-token etcd-cluster-1 \
+                --initial-cluster ${PEERS} \
+                --initial-cluster-state new \
+                --data-dir /var/run/etcd/default.etcd
+          ports:
+            - containerPort: 2379
+              name: client
+            - containerPort: 2380
+              name: peer
+          volumeMounts:
+            - name: etcd-storage
+              mountPath: /var/run/etcd/default.etcd
+      volumes:
+        - name: etcd-storage
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: etcd
+  annotations:
+    # Create endpoints also if the related pod isn't ready
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+spec:
+  ports:
+    - port: 2379
+      name: client
+    - port: 2380
+      name: peer
+  clusterIP: None
+  selector:
+    component: etcd
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: etcd-client
+spec:
+  ports:
+    - name: http
+      nodePort: 30453
+      port: 2379
+      targetPort: 2379
+      protocol: TCP
+  type: NodePort
+  selector:
+    component: etcd
