@@ -1,0 +1,99 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: elastic-conf
+data:
+  elasticsearch.yml: |
+    node.name: master
+    cluster.initial_master_nodes: ["master"]
+    network.host: 0.0.0.0
+    path.data: /data
+    http.cors.enabled: true
+    http.cors.allow-origin: "*"
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: elasticsearch
+spec:
+  replicas: 1
+  serviceName: elasticsearch
+  selector:
+    matchLabels:
+      name: elasticsearch
+  template:
+    metadata:
+      labels:
+        name: elasticsearch
+    spec:
+      nodeName: master
+      initContainers:
+        - name: init-exec
+          image: alpine
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/sh
+            - -c
+            - chmod 777 -R data
+          volumeMounts:
+            - mountPath: /data
+              name: elastic-data
+          securityContext:
+            privileged: true
+            runAsUser: 0
+        - name: init-sysctl
+          image: busybox
+          imagePullPolicy: IfNotPresent
+          command:
+            - sysctl
+            - -w
+            - vm.max_map_count=655360
+          securityContext:
+            privileged: true
+      containers:
+        - name: elasticsearch
+          image: elasticsearch:7.5.2
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "0.25"
+          ports:
+            - containerPort: 9200
+            - containerPort: 9300
+          volumeMounts:
+            - name: elastic-data
+              mountPath: /data
+            - name: elastic-plugins
+              mountPath: /usr/share/elasticsearch/plugins
+            - name: elastic-conf
+              mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
+              subPath: elasticsearch.yml
+      volumes:
+        - name: elastic-plugins
+          hostPath:
+            path: /data/elastic/plugins
+        - name: elastic-conf
+          configMap:
+            name: elastic-conf
+        - name: elastic-data
+          hostPath:
+            path: /data/elastic/data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch
+  labels:
+    name: elasticsearch
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9200
+      targetPort: 9200
+      name: elasticsearch-http
+    - port: 9300
+      targetPort: 9300
+      name: elasticsearch-tcp
+  selector:
+    name: elasticsearch
