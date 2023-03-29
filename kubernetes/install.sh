@@ -4,6 +4,8 @@ log(){
  echo -e '\e[92m'$1'\e[0m'
 }
 
+version=1.24.4
+
 log "init tools start"
 yum install -y yum-utils
 yum install -y yum-plugin-downloadonly
@@ -28,7 +30,7 @@ gpgcheck=0
 repo_gpgcheck=0
 gpgkey=https://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg https://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg
 EOF
-yum install -y --downloadonly --downloaddir=rpm/kubeadm-rpm kubelet-1.22.5 kubeadm-1.22.5 kubectl-1.22.5 --disableexcludes=kubernetes
+yum install -y --downloadonly --downloaddir=rpm/kubeadm-rpm kubelet-$version kubeadm-$version kubectl-$version --disableexcludes=kubernetes
 log "download kubeadm end"
 
 tar -zcvf rpm.tar rpm
@@ -38,7 +40,12 @@ rpm -Uvh --force --nodeps rpm/docker-rpm/*.rpm
 systemctl start docker
 log "install docker end"
 
+log "install kubeamd start"
+rpm -Uvh --force --nodeps rpm/kubeadm-rpm/*.rpm
+systemctl enable --now kubelet
+log "install kubeamd end"
+
 log "download kubeadm images start"
-kubeadm config images pull --kubernetes-version 1.22.5 --image-repository registry.aliyuncs.com/google_containers
-docker save $(docker images | grep -v REPOSITORY | awk 'BEGIN{OFS=":";ORS=" "}{print $1,$2}') -o kube-1.22.5-img.tar
+kubeadm config images pull --kubernetes-version $version --image-repository registry.aliyuncs.com/google_containers
+docker save $(docker images | grep -v REPOSITORY | awk 'BEGIN{OFS=":";ORS=" "}{print $1,$2}') -o kube-$version-img.tar
 log "download kubeadm images end"
