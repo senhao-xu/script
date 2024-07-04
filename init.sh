@@ -1,8 +1,8 @@
 #!/bin/bash
 
+#https://mirrors.cloud.tencent.com/
 mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
-sudo yum-config-manager --add-repo http://mirrors.tencentyun.com/repo/centos7_base.repo
-sudo yum-config-manager --add-repo http://mirrors.tencentyun.com/repo/centos7_epel.repo
+wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.cloud.tencent.com/repo/centos7_base.repo
 
 yum update -y 
 yum install -y vim wget net-tools.x86_64 bind-utils
