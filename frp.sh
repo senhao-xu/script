@@ -105,3 +105,29 @@ EOF
 systemctl enable frpc
 systemctl start frpc
 }
+
+show_menu() {
+  echo -e "
+  ${green}frp 面板管理脚本${plain}
+  ${green}0.${plain} 退出脚本
+  ${green}1.${plain} 安装frps $name
+  ${green}2.${plain} 安装frpc $name
+ "
+  echo && read -p "请输入选择 [0-2]:" num
+
+  case "${num}" in
+  0)
+    exit 0
+    ;;
+  1)
+    install_frps
+    ;;
+  2)
+    install_frpc
+    ;;
+  *)
+    LOGE "请输入正确的数字 [0-2]"
+    ;;
+  esac
+}
+show_menu
