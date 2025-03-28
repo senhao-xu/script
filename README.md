@@ -10,3 +10,8 @@ wget -qO- https://raw.githubusercontent.com/senhao-xu/script/main/init.sh | bash
 ```bash
 wget -qO- https://raw.githubusercontent.com/senhao-xu/script/main/update_core.sh | bash
 ```
+
+#### 系统配置查看
+```bash
+wget -qO- https://raw.githubusercontent.com/senhao-xu/script/refs/heads/main/bench.sh | bash
+```
