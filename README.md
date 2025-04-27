@@ -13,5 +13,5 @@ wget -qO- https://raw.githubusercontent.com/senhao-xu/script/main/update_core.sh
 
 #### 系统配置查看
 ```bash
-wget -qO- https://raw.githubusercontent.com/senhao-xu/script/refs/heads/main/bench.sh | bash
+wget -qO- https://raw.githubusercontent.com/senhao-xu/script/main/bench.sh | bash
 ```
