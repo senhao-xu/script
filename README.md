@@ -3,15 +3,15 @@
 
 ### 系统初始化
 ```bash
-curl -fsSL https://raw.githubusercontent.com/senhao-xu/script/main/init.sh | bash
+curl -fsSL https://raw.githubusercontent.com/senhao-xu/script/main/centos/init.sh | bash
 ```
 
 #### 内核升级
 ```bash
-curl -fsSL https://raw.githubusercontent.com/senhao-xu/script/main/update_core.sh | bash
+curl -fsSL https://raw.githubusercontent.com/senhao-xu/script/main/centos/update_core.sh | bash
 ```
 
 #### 系统配置查看
 ```bash
-curl -fsSL https://raw.githubusercontent.com/senhao-xu/script/main/bench.sh | bash
+curl -fsSL https://raw.githubusercontent.com/senhao-xu/script/main/centos/bench.sh | bash
 ```
