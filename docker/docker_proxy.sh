@@ -34,8 +34,7 @@ function disable_proxy() {
 
 function reload_and_restart() {
   echo "🔄 重载 systemd 并重启 Docker..."
-  sudo systemctl daemon-reload
-  sudo systemctl restart docker
+  kill -SIGHUP $(pidof dockerd)
   echo "✅ 操作完成！"
 }
 
