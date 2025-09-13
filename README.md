@@ -15,3 +15,8 @@ curl -fsSL https://raw.githubusercontent.com/senhao-xu/script/main/centos/update
 ```bash
 curl -fsSL https://raw.githubusercontent.com/senhao-xu/script/main/centos/bench.sh | bash
 ```
+
+#### Docker安装
+```bash
+curl -fsSL https://raw.githubusercontent.com/senhao-xu/script/main/docker/install.sh | bash
+```
