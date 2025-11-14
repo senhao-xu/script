@@ -20,3 +20,8 @@ curl -fsSL https://raw.githubusercontent.com/senhao-xu/script/main/centos/bench.
 ```bash
 curl -fsSL https://raw.githubusercontent.com/senhao-xu/script/main/docker/install.sh | bash
 ```
+
+#### Debian 安装Docker
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/senhao-xu/script/refs/heads/main/docker/debian12.sh)
+```
