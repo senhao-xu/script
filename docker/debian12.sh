@@ -85,6 +85,7 @@ if [ -n "$MAJOR" ]; then
 fi
 
 echo ">>> 添加 Docker配置..."
+mkdir -p /etc/docker
 tee /etc/docker/daemon.json <<-'EOF'
 {
     "registry-mirrors": [],
