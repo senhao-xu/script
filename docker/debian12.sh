@@ -98,6 +98,8 @@ tee /etc/docker/daemon.json <<-'EOF'
 }
 EOF
 
+rm -f /etc/apt/sources.list.d/docker.list
+
 
 # ========= 安装 Docker ==========
 echo ">>> 开始安装 Docker..."
