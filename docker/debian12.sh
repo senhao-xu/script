@@ -98,8 +98,6 @@ tee /etc/docker/daemon.json <<-'EOF'
 }
 EOF
 
-rm -f /etc/apt/sources.list.d/docker.list
-
 
 # ========= 安装 Docker ==========
 echo ">>> 开始安装 Docker..."
@@ -126,3 +124,5 @@ systemctl enable --now docker
 echo
 echo "🎉 安装完成，当前 Docker 版本："
 docker --version
+
+rm -f /etc/apt/sources.list.d/docker.list
