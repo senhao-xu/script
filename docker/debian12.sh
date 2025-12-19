@@ -11,9 +11,10 @@ echo
 echo "================ 请选择 Docker 版本 ================"
 echo "  1) latest（最新稳定版，不锁版本）"
 echo "  2) 最新的 28.x 版本"
-echo "  3) 最新的 26.x 版本"
+echo "  3) 最新的 27.x 版本"
+echo "  4) 最新的 26.x 版本"
 echo "===================================================="
-read -rp "请输入选项 [1-3]: " CHOICE
+read -rp "请输入选项 [1-4]: " CHOICE
 echo
 
 MAJOR=""
@@ -28,6 +29,10 @@ case "$CHOICE" in
     echo ">>> 选择：$MAJOR.x 最新版本"
     ;;
   3)
+    MAJOR="27"
+    echo ">>> 选择：$MAJOR.x 最新版本"
+    ;;
+  4)
     MAJOR="26"
     echo ">>> 选择：$MAJOR.x 最新版本"
     ;;
