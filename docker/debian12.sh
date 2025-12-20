@@ -131,3 +131,4 @@ echo "🎉 安装完成，当前 Docker 版本："
 docker --version
 
 rm -f /etc/apt/sources.list.d/docker.list
+apt-get update
