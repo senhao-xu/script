@@ -7,6 +7,14 @@ if [ "$(id -u)" -ne 0 ]; then
   exit 1
 fi
 
+# 检测系统版本
+. /etc/os-release
+if [ "$ID" != "debian" ] || { [ "$VERSION_ID" != "12" ] && [ "$VERSION_ID" != "13" ]; }; then
+  echo "不支持的系统：${ID:-unknown} ${VERSION_ID:-}，本脚本仅支持 Debian 12 / Debian 13"
+  exit 1
+fi
+echo ">>> 系统检测：Debian $VERSION_ID ($VERSION_CODENAME)"
+
 echo
 echo "================ 请选择 Docker 版本 ================"
 echo "  1) latest（最新稳定版，不锁版本）"
@@ -58,10 +66,10 @@ curl -fsSL https://download.docker.com/linux/debian/gpg \
   | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 chmod a+r /etc/apt/keyrings/docker.gpg
 
-CODENAME="$(. /etc/os-release && echo "$VERSION_CODENAME")"
+CODENAME="$VERSION_CODENAME"
 ARCH="$(dpkg --print-architecture)"
 
-echo ">>> 系统：Debian $CODENAME, 架构：$ARCH"
+echo ">>> 架构：$ARCH"
 
 echo ">>> 写入 Docker 源..."
 cat >/etc/apt/sources.list.d/docker.list <<EOF
