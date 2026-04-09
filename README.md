@@ -23,5 +23,5 @@ curl -fsSL https://raw.githubusercontent.com/senhao-xu/script/main/docker/instal
 
 #### Debian 安装Docker
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/senhao-xu/script/refs/heads/main/docker/debian12.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/senhao-xu/script/refs/heads/main/docker/docker.sh)
 ```
