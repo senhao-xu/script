@@ -55,12 +55,17 @@ if [ -z "$MAJORS" ]; then
   exit 1
 fi
 
+LATEST_MAJOR=$(echo "$MAJORS" | head -1)
+
 echo
 echo "================ 请选择 Docker 版本 ================"
-echo "  1) latest（最新稳定版，不锁版本）"
-IDX=2
+IDX=1
 for m in $MAJORS; do
-  echo "  ${IDX}) ${m}.x 最新版本"
+  if [ "$m" = "$LATEST_MAJOR" ]; then
+    echo "  ${IDX}) ${m}.x（latest）"
+  else
+    echo "  ${IDX}) ${m}.x"
+  fi
   IDX=$((IDX + 1))
 done
 MAX_OPT=$((IDX - 1))
@@ -71,11 +76,14 @@ echo
 MAJOR=""
 FULL_VER=""
 
-if [ "$CHOICE" -eq 1 ] 2>/dev/null; then
-  echo ">>> 选择：latest（最新稳定版）"
-elif [ "$CHOICE" -ge 2 ] 2>/dev/null && [ "$CHOICE" -le "$MAX_OPT" ] 2>/dev/null; then
-  MAJOR=$(echo "$MAJORS" | sed -n "$((CHOICE - 1))p")
-  echo ">>> 选择：$MAJOR.x 最新版本"
+if [ "$CHOICE" -ge 1 ] 2>/dev/null && [ "$CHOICE" -le "$MAX_OPT" ] 2>/dev/null; then
+  MAJOR=$(echo "$MAJORS" | sed -n "${CHOICE}p")
+  if [ "$MAJOR" = "$LATEST_MAJOR" ]; then
+    echo ">>> 选择：${MAJOR}.x（最新稳定版，不锁版本）"
+    MAJOR=""
+  else
+    echo ">>> 选择：${MAJOR}.x"
+  fi
 else
   echo "无效选项：$CHOICE"
   exit 1
