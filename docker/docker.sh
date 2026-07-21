@@ -9,11 +9,19 @@ fi
 
 # 检测系统版本
 . /etc/os-release
-if [ "$ID" != "debian" ] || { [ "$VERSION_ID" != "12" ] && [ "$VERSION_ID" != "13" ]; }; then
-  echo "不支持的系统：${ID:-unknown} ${VERSION_ID:-}，本脚本仅支持 Debian 12 / Debian 13"
-  exit 1
-fi
-echo ">>> 系统检测：Debian $VERSION_ID ($VERSION_CODENAME)"
+case "$ID:$VERSION_ID" in
+  debian:12|debian:13)
+    DISTRO_NAME="Debian"
+    ;;
+  ubuntu:22.04|ubuntu:24.04|ubuntu:26.04)
+    DISTRO_NAME="Ubuntu"
+    ;;
+  *)
+    echo "不支持的系统：${ID:-unknown} ${VERSION_ID:-}，本脚本仅支持 Debian 12 / 13 和 Ubuntu 22.04 / 24.04 / 26.04"
+    exit 1
+    ;;
+esac
+echo ">>> 系统检测：$DISTRO_NAME $VERSION_ID ($VERSION_CODENAME)"
 
 echo ">>> 开始准备环境..."
 
@@ -26,7 +34,7 @@ apt-get install -y ca-certificates curl gnupg lsb-release
 
 echo ">>> 添加 Docker GPG key..."
 install -m 0755 -d /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/debian/gpg \
+curl -fsSL "https://download.docker.com/linux/$ID/gpg" \
   | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 chmod a+r /etc/apt/keyrings/docker.gpg
 
@@ -38,7 +46,7 @@ echo ">>> 架构：$ARCH"
 echo ">>> 写入 Docker 源..."
 cat >/etc/apt/sources.list.d/docker.list <<EOF
 deb [arch=$ARCH signed-by=/etc/apt/keyrings/docker.gpg] \
-https://download.docker.com/linux/debian \
+https://download.docker.com/linux/$ID \
 $CODENAME stable
 EOF
 
